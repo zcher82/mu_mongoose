@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Intro to Mongoose</title>
+    <script src="/vendor/angular.min.js"></script> <!-- -->
+    <script src="/scripts/clientapp.js"></script>
+    <script src="/scripts/controllers/movieController.js"></script>
+  </head>
+  <body ng-app="movieApp"> <!-- ng-app: defines the angularJS app for html file. movieApp is the angularJS app for this file -->
+    <main ng-controller="MovieController"> <!-- ng-controller: defines controller for whatever is contained inside of main. -->
+                                          <!-- "MovieController" is the controller that everything beneath will reference to -->
+      <section id="movieSubmission">
+        <h1>Submit a Movie</h1>
+        <form id="movieForm">
+          <label for="title">Title:</label>
+          <input type="text" id="currentMovieTitle" name="title" ng-model="currentMovie.title" /> <!-- "currentMovie.title" references currentMovie object and title property-->
+                                                    <!-- ng-model: holds, "models" what user types into input field, and that data is the data that gets saved when "submit" is clicked-->
+          <label for="releaseDate">Release Date:</label>
+          <input type="date" id="currentMovieReleaseDate" name="releaseDate" ng-model="currentMovie.releaseDate" />
+
+          <label for="director">Director:</label>
+          <input type="text" id="currentMovieDirector" name="director" ng-model="currentMovie.director" />
+
+          <button ng-click="submitCurrentMovie()">Submit</button> <!-- ng-click: on click, submitCurrentMovie function is called, data entered gets saved into currentMovie object and posted to DB-->
+        </form>
+      </section>
+      <section id="movies">
+        <h1>Movie Listing</h1>
+          <ul id="movieList" ng-repeat="movie in movies"> <!-- ng-repeat: repeats everything within <ul> for every movie(arbitrary name given to each object) in the movies array -->
+            <li class="movie">
+              <label for="title">Title:</label>
+              <input type="text" id="movie" name="title" ng-model="movie.title" /> <!-- movie is the name of the returned object. title a property in that object-->
+
+              <label for="releaseDate">Release Date:</label>
+              <input type="date" id="releaseDate" name="releaseDate" ng-model="movie.releaseDate" />
+
+              <label for="director">Director:</label>
+              <input type="text" id="director" name="director" ng-model="movie.director" />
+
+              <button class="update" ng-click="updateMovie(movie)">Update</button> <!-- on "update" click, updateMovie function called, with parameter of "movie", which references the object "movie" from ng-repeat above-->
+              <button class="delete" ng-click="deleteMovie(movie._id)">Delete</button> <!-- on click, deleteMovie function called, with parameter of specific movie id-->
+              <button class="comments" ng-click="showComments(movie._id)">Comments</button>
+              <div ng-show="displayedMovieId == movie._id"> <!-- "comments" function sets the "displayedMovieId" to the id of the clicked movie id. so we will only show the comments box (in div holding ng-show, if the displayedMovieId == movie._id)-->
+                <div ng-repeat="comment in movie.comments"> <!-- ng-repeat: repeat for every comment in movie.comments-->
+                  <p>
+                    {{comment.content}} <!-- expression displayed through $scope. content in comment object is displayed. -->
+                  </p>
+                  <p ng-hide="comment.commentAuthor == null">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-{{comment.commentAuthor}}
+                  </p>
+                </div>
+                <form id="commentForm">
+                  <label for="comment">Comment:</label>
+                  <textarea id="comment" name="comment" ng-model="newComment.content"></textarea> <!-- mg-model: entered data gets saved to newComment object under content property-->
+                  <label for="commentAuthor">Author:</label>
+                  <textarea id="commentAuthor" name="commentAuthor" ng-model="newComment.commentAuthor"></textarea>
+
+                  <button ng-click="submitComment(movie._id)">Submit</button> <!-- submitComment function called with movie id as parameter-->
+                </form>
+              </div>
+            </li>
+          </ul>
+
+      </section>
+    </main>
+  </body>
+</html>
